@@ -58,26 +58,23 @@ class DemoBarcodeLookupPlugin extends BaseBarcodeLookupPlugin
 	*/
 	protected function ExecuteLookup($barcode)
 	{
-		if ($barcode === 'nothing')
-		{
-			// Demonstration when nothing is found
+		$client = new GuzzleHttp\Client();
+		$res = $client->get('https://world.openfoodfacts.org/api/v3/product/' . $barcode);
+
+		if ($res->getStatusCode() !== 200) {
 			return null;
 		}
-		elseif ($barcode === 'error')
-		{
-			// Demonstration when an error occurred
-			throw new \Exception('This is the error message from the plugin...');
-		}
-		else
-		{
-			return [
-				'name' => 'LookedUpProduct_' . RandomString(5),
-				'location_id' => $this->Locations[0]->id,
-				'qu_id_purchase' => $this->QuantityUnits[0]->id,
-				'qu_id_stock' => $this->QuantityUnits[0]->id,
-				'qu_factor_purchase_to_stock' => 1,
-				'barcode' => $barcode
-			];
-		}
+		$response = json_decode($res->getBody()->getContents(), true);
+		return [
+			'barcode' => $barcode,
+			'name' => $response['product']['product_name'],
+			'image' => $response['product']['image_front_url'],
+			'location_id' => $this->Locations[0]->id,
+			'qu_id_purchase' => $this->QuantityUnits[0]->id,
+			'qu_id_stock' => $this->QuantityUnits[0]->id,
+			'qu_factor_purchase_to_stock' => 1,
+		];
+
+
 	}
 }

@@ -111,6 +111,8 @@
 			}
 		@endif
 		};
+		Grocy.LocalPath = '{{ $LocalPath }}';
+		Grocy.RemotePath = '{{ $RemotePath }}';
 
 		@if (GROCY_AUTHENTICATED)
 		Grocy.UserSettings = {!! json_encode($userSettings) !!};

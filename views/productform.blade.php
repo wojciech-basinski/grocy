@@ -818,7 +818,7 @@
 								</a>
 							</td>
 							<td>
-								{{ FindObjectInArrayByPropertyValue($quantityunits, 'id', $quConversion->from_qu_id)->name }}
+								{{ FindObjectInArrayByPropertyValue($quantityunits, 'id', $quConversion->from_qu_id)->name }}%%
 							</td>
 							<td>
 								{{ FindObjectInArrayByPropertyValue($quantityunits, 'id', $quConversion->to_qu_id)->name }}
@@ -843,41 +843,78 @@
 					<h4>
 						{{ $__t('Picture') }}
 					</h4>
+				</div>
+				@if($mode == "edit" && !empty($product->image))
+				<div class="form-group">
+					<label for="name">{{ $__t('Picture') }}</label>
+					<input type="file"
+						   class="custom-file-input"
+						   id="product-picture"
+						   accept="image/*">
+					<label id="product-picture-label"
+						   class="custom-file-label @if(empty($product->picture_file_name)) d-none @endif"
+						   for="product-picture">
+						{{ $product->picture_file_name }}
+					</label>
+					<label id="product-picture-label-none"
+						   class="custom-file-label @if(!empty($product->picture_file_name)) d-none @endif"
+						   for="product-picture">
+						{{ $__t('No file selected') }}
+					</label>
+					<input type="text"
+						   class="form-control"
+						   id="product-image"
+						   name="product-image"
+						   value="@if($mode == 'edit'){{ $product->image}}@endif">
+				</div>
+				<img id="current-product-picture"
+					src="{{ $product->image }}"
+					class="img-fluid img-thumbnail mt-2 mb-5"
+					loading="lazy">
+				@else
 					<div class="form-group w-75 m-0">
 						<div class="input-group">
 							<div class="custom-file">
 								<input type="file"
-									class="custom-file-input"
-									id="product-picture"
-									accept="image/*">
+									   class="custom-file-input"
+									   id="product-picture"
+									   accept="image/*">
 								<label id="product-picture-label"
-									class="custom-file-label @if(empty($product->picture_file_name)) d-none @endif"
-									for="product-picture">
+									   class="custom-file-label @if(empty($product->picture_file_name)) d-none @endif"
+									   for="product-picture">
 									{{ $product->picture_file_name }}
 								</label>
 								<label id="product-picture-label-none"
-									class="custom-file-label @if(!empty($product->picture_file_name)) d-none @endif"
-									for="product-picture">
+									   class="custom-file-label @if(!empty($product->picture_file_name)) d-none @endif"
+									   for="product-picture">
 									{{ $__t('No file selected') }}
 								</label>
 							</div>
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fa-solid fa-trash"
-										id="delete-current-product-picture-button"></i></span>
+																  id="delete-current-product-picture-button"></i></span>
 							</div>
 						</div>
+						<div class="form-group">
+							<label for="name">{{ $__t('Picture') }}</label>
+							<input type="file"
+								   class="custom-file-input"
+								   id="product-picture"
+								   accept="image/*">
+							<input type="text"
+								   class="form-control"
+								   id="product-image"
+								   name="product-image"
+								   value="@if($mode == 'edit'){{ $product->image}}@endif">
+						</div>
+						<img id="current-product-picture"
+							 src="{{ $U('/api/files/productpictures/' . base64_encode($product->picture_file_name) . '?force_serve_as=picture&best_fit_width=400') }}"
+							 class="img-fluid img-thumbnail mt-2 mb-5"
+							 loading="lazy">
+						<p id="delete-current-product-picture-on-save-hint"
+						   class="form-text text-muted font-italic d-none mb-5">{{ $__t('The current picture will be deleted on save') }}</p>
+
 					</div>
-				</div>
-				@if($mode == "edit" && !empty($product->picture_file_name))
-				<img id="current-product-picture"
-					src="{{ $U('/api/files/productpictures/' . base64_encode($product->picture_file_name) . '?force_serve_as=picture&best_fit_width=400') }}"
-					class="img-fluid img-thumbnail mt-2 mb-5"
-					loading="lazy">
-				<p id="delete-current-product-picture-on-save-hint"
-					class="form-text text-muted font-italic d-none mb-5">{{ $__t('The current picture will be deleted on save') }}</p>
-				@else
-				<p id="no-current-product-picture-hint"
-					class="form-text text-muted font-italic mb-5">{{ $__t('No picture available') }}</p>
 				@endif
 			</div>
 		</div>

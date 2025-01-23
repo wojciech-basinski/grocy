@@ -154,6 +154,8 @@ Setting('FEATURE_FLAG_THERMAL_PRINTER', false);
 Setting('FEATURE_FLAG_DISABLE_BROWSER_BARCODE_CAMERA_SCANNING', false); // Set this to true if you want to disable the ability to scan a barcode via the device camera (Browser API)
 Setting('FEATURE_FLAG_AUTO_TORCH_ON_WITH_CAMERA', true); // Enables the torch automatically (if the device has one)
 
+Setting('LOCAL_PATH', '');
+Setting('REMOTE_PATH', '');
 
 // Default user settings
 // These settings can be changed per user and via the UI,

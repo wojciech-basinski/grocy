@@ -228,6 +228,8 @@ Grocy.Api.DeleteFile = function(fileName, group, success, error)
 
 U = function(relativePath)
 {
+	relativePath = relativePath.replace(Grocy.LocalPath, '');
+	relativePath = relativePath.replace(Grocy.RemotePath, '');
 	return Grocy.BaseUrl.replace(/\/$/, '') + relativePath;
 }
 

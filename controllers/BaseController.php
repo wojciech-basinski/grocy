@@ -25,11 +25,11 @@ class BaseController
 	public function __construct(Container $container)
 	{
 		$this->AppContainer = $container;
-		$this->View = $container->get('view');
+		$this->view = $container->get('view');
 	}
 
 	protected $AppContainer;
-	private $View;
+	private $view;
 
 	protected function getApiKeyService()
 	{
@@ -121,19 +121,19 @@ class BaseController
 		$container = $this->AppContainer;
 
 		$versionInfo = $this->getApplicationService()->GetInstalledVersion();
-		$this->View->set('version', $versionInfo->Version);
+		$this->view->set('version', $versionInfo->Version);
 
 		$localizationService = $this->getLocalizationService();
-		$this->View->set('__t', function (string $text, ...$placeholderValues) use ($localizationService)
+		$this->view->set('__t', function (string $text, ...$placeholderValues) use ($localizationService)
 		{
 			return $localizationService->__t($text, $placeholderValues);
 		});
-		$this->View->set('__n', function ($number, $singularForm, $pluralForm, $isQu = false) use ($localizationService)
+		$this->view->set('__n', function ($number, $singularForm, $pluralForm, $isQu = false) use ($localizationService)
 		{
 			return $localizationService->__n($number, $singularForm, $pluralForm, $isQu);
 		});
-		$this->View->set('LocalizationStrings', $localizationService->GetPoAsJsonString());
-		$this->View->set('LocalizationStringsQu', $localizationService->GetPoAsJsonStringQu());
+		$this->view->set('LocalizationStrings', $localizationService->GetPoAsJsonString());
+		$this->view->set('LocalizationStringsQu', $localizationService->GetPoAsJsonStringQu());
 
 		// TODO: Better handle this generically based on the current language (header in .po file?)
 		$dir = 'ltr';
@@ -141,9 +141,9 @@ class BaseController
 		{
 			$dir = 'rtl';
 		}
-		$this->View->set('dir', $dir);
+		$this->view->set('dir', $dir);
 
-		$this->View->set('U', function ($relativePath, $isResource = false) use ($container)
+		$this->view->set('U', function ($relativePath, $isResource = false) use ($container)
 		{
 			return $container->get('UrlManager')->ConstructUrl($relativePath, $isResource);
 		});
@@ -153,7 +153,7 @@ class BaseController
 		{
 			$embedded = true;
 		}
-		$this->View->set('embedded', $embedded);
+		$this->view->set('embedded', $embedded);
 
 		$constants = get_defined_constants();
 		foreach ($constants as $constant => $value)
@@ -163,11 +163,11 @@ class BaseController
 				unset($constants[$constant]);
 			}
 		}
-		$this->View->set('featureFlags', $constants);
+		$this->view->set('featureFlags', $constants);
 
 		if (GROCY_AUTHENTICATED)
 		{
-			$this->View->set('permissions', User::PermissionList());
+			$this->view->set('permissions', User::PermissionList());
 
 			$decimalPlacesAmounts = $this->getUsersService()->GetUserSetting(GROCY_USER_ID, 'stock_decimal_places_amounts');
 			if ($decimalPlacesAmounts <= 0)
@@ -178,27 +178,30 @@ class BaseController
 			{
 				$defaultMinAmount = '0.' . str_repeat('0', $decimalPlacesAmounts - 1) . '1';
 			}
-			$this->View->set('DEFAULT_MIN_AMOUNT', $defaultMinAmount);
+			$this->view->set('DEFAULT_MIN_AMOUNT', $defaultMinAmount);
 		}
 
-		$this->View->set('viewName', $viewName);
+		$this->view->set('viewName', $viewName);
 
-		return $this->View->render($response, $viewName, $data);
+		$this->view->set('LocalPath', GROCY_LOCAL_PATH);
+		$this->view->set('RemotePath', GROCY_REMOTE_PATH);
+
+		return $this->view->render($response, $viewName, $data);
 	}
 
 	protected function renderPage($response, $viewName, $data = [])
 	{
-		$this->View->set('userentitiesForSidebar', $this->getDatabase()->userentities()->where('show_in_sidebar_menu = 1')->orderBy('name'));
+		$this->view->set('userentitiesForSidebar', $this->getDatabase()->userentities()->where('show_in_sidebar_menu = 1')->orderBy('name'));
 		try
 		{
 			$usersService = $this->getUsersService();
 			if (defined('GROCY_USER_ID'))
 			{
-				$this->View->set('userSettings', $usersService->GetUserSettings(GROCY_USER_ID));
+				$this->view->set('userSettings', $usersService->GetUserSettings(GROCY_USER_ID));
 			}
 			else
 			{
-				$this->View->set('userSettings', null);
+				$this->view->set('userSettings', null);
 			}
 		}
 		catch (\Exception $ex)
