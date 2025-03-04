@@ -365,7 +365,7 @@ class StockApiController extends BaseApiController
 			$nextXDays = $request->getQueryParams()['due_soon_days'];
 		}
 
-		$dueProducts = $this->getStockService()->GetDueProducts($nextXDays, true);
+		$dueProducts = $this->getStockService()->getDueProductsFromStock($nextXDays);
 		$overdueProducts = $this->getStockService()->GetDueProducts(-1);
 		$expiredProducts = $this->getStockService()->GetExpiredProducts();
 		$missingProducts = $this->getStockService()->GetMissingProducts();

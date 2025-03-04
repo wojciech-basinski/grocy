@@ -259,7 +259,7 @@ function RefreshStatistics()
 	Grocy.Api.Get('stock/volatile?due_soon_days=' + nextXDays,
 		function(result)
 		{
-			var dueProducts = result.due_products.filter(x => !BoolVal(x.product.hide_on_stock_overview));
+			var dueProducts = result.due_products;
 			var overdueProducts = result.overdue_products.filter(x => !BoolVal(x.product.hide_on_stock_overview));
 			var expiredProducts = result.expired_products.filter(x => !BoolVal(x.product.hide_on_stock_overview));
 			var missingProducts = result.missing_products.filter(x => !BoolVal(x.product.hide_on_stock_overview));

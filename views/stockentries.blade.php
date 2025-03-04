@@ -24,16 +24,54 @@
 </div>
 
 <hr class="my-2">
-
+<div class="border-top border-bottom my-2 py-1">
+	@if (GROCY_FEATURE_FLAG_STOCK_BEST_BEFORE_DATE_TRACKING)
+		<div id="info-expired-products"
+			 data-status-filter="expired"
+			 class="error-message status-filter-message responsive-button mr-2"></div>
+		<div id="info-overdue-products"
+			 data-status-filter="overdue"
+			 class="secondary-message status-filter-message responsive-button mr-2"></div>
+		<div id="info-duesoon-products"
+			 data-next-x-days="{{ $nextXDays }}"
+			 data-status-filter="duesoon"
+			 class="warning-message status-filter-message responsive-button mr-2"></div>
+	@endif
+	<div class="float-right mt-1">
+		<a class="btn btn-sm btn-outline-info d-md-none"
+		   data-toggle="collapse"
+		   href="#table-filter-row"
+		   role="button">
+			<i class="fa-solid fa-filter"></i>
+		</a>
+		<button id="clear-filter-button"
+				class="btn btn-sm btn-outline-info"
+				data-toggle="tooltip"
+				title="{{ $__t('Clear filter') }}">
+			<i class="fa-solid fa-filter-circle-xmark"></i>
+		</button>
+	</div>
+</div>
 <div class="row collapse d-md-flex"
 	id="table-filter-row">
-	<div class="col-12 col-md-6 col-xl-3">
+	<div class="d-none">
 		@include('components.productpicker', array(
 		'products' => $products,
 		'disallowAllProductWorkflows' => true,
 		'isRequired' => false,
 		'additionalGroupCssClasses' => 'mb-0'
 		))
+	</div>
+	<div class="col-12 col-md-6 col-xl-3">
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<span class="input-group-text"><i class="fa-solid fa-search"></i></span>
+			</div>
+			<input type="text"
+				   id="search"
+				   class="form-control"
+				   placeholder="{{ $__t('Search') }}">
+		</div>
 	</div>
 	@if(GROCY_FEATURE_FLAG_STOCK_LOCATION_TRACKING)
 	<div class="col-12 col-md-6 col-xl-3 mt-auto">
@@ -51,14 +89,35 @@
 		</div>
 	</div>
 	@endif
-	<div class="col mt-auto">
-		<div class="float-right mt-3">
-			<button id="clear-filter-button"
-				class="btn btn-sm btn-outline-info"
-				data-toggle="tooltip"
-				title="{{ $__t('Clear filter') }}">
-				<i class="fa-solid fa-filter-circle-xmark"></i>
-			</button>
+	<div class="col-12 col-md-6 col-xl-3 mt-auto">
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<span class="input-group-text"><i class="fa-solid fa-filter"></i>&nbsp;{{ $__t('Product group') }}</span>
+			</div>
+			<select class="custom-control custom-select"
+					id="product-group-filter">
+				<option value="all">{{ $__t('All') }}</option>
+				@foreach($productGroups as $productGroup)
+					<option value="{{ $productGroup->id }}">{{ $productGroup->name }}</option>
+				@endforeach
+			</select>
+		</div>
+	</div>
+	<div class="col-12 col-md-6 col-xl-3 mt-auto">
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<span class="input-group-text"><i class="fa-solid fa-filter"></i>&nbsp;{{ $__t('Status') }}</span>
+			</div>
+			<select class="custom-control custom-select"
+					id="status-filter">
+				<option class="bg-white"
+						value="all">{{ $__t('All') }}</option>
+				@if (GROCY_FEATURE_FLAG_STOCK_BEST_BEFORE_DATE_TRACKING)
+					<option value="duesoon">{{ $__t('Due soon') }}</option>
+					<option value="overdue">{{ $__t('Overdue') }}</option>
+					<option value="expired">{{ $__t('Expired') }}</option>
+				@endif
+			</select>
 		</div>
 	</div>
 </div>
@@ -88,6 +147,8 @@
 					<th class="d-none">Hidden purchased_date</th>
 					<th>{{ $__t('Timestamp') }}</th>
 					<th>{{ $__t('Note') }}</th>
+					<th class="d-none">Hidden product group</th>
+					<th class="d-none">Hidden status</th>
 
 					@include('components.userfields_thead', array(
 					'userfields' => $userfieldsProducts
@@ -251,6 +312,7 @@
 					<td class="productcard-trigger cursor-link"
 						data-product-id="{{ $stockEntry->product_id }}">
 						{{ FindObjectInArrayByPropertyValue($products, 'id', $stockEntry->product_id)->name }}
+						<span class="d-none barcode-test">{{ $stockEntry->product_barcode }}</span>
 					</td>
 					<td>
 						<span class="custom-sort d-none">{{$stockEntry->amount}}</span>
@@ -301,6 +363,28 @@
 					</td>
 					<td>
 						<span id="stock-{{ $stockEntry->id }}-note">{{ $stockEntry->note }}</span>
+					</td>
+					<td class="d-none">
+						xx{{ $stockEntry->product_group_id }}xx
+					</td>
+					<td class="d-none">
+						<script>console.log( {{ json_encode($stockEntry) }} )</script>
+						@if($stockEntry->best_before_date < date('Y-m-d
+							23:59:59',
+							strtotime('-'
+							. '1'
+							. ' days'
+							))
+							&&
+							$stockEntry->amount > 0) @if($stockEntry->due_type == 1) overdue @else expired @endif @elseif($stockEntry->best_before_date < date('Y-m-d
+								23:59:59',
+								strtotime('+'
+								.
+								$nextXDays
+								. ' days'
+								))
+								&&
+								$stockEntry->amount > 0) duesoon @endif
 					</td>
 
 					@include('components.userfields_tbody', array(

@@ -9,12 +9,35 @@
 		{ "type": "html", "targets": 4 },
 		{ "type": "custom-sort", "targets": 7 },
 		{ "type": "html", "targets": 8 },
-		{ "type": "html", "targets": 9 }
+		{ "type": "html", "targets": 9 },
+		{ 'visible': false, 'targets': 12 },
+		{ 'visible': false, 'targets': 13 },
 	].concat($.fn.dataTable.defaults.columnDefs)
 });
 $('#stockentries-table tbody').removeClass("d-none");
 stockEntriesTable.columns.adjust().draw();
 
+function statistics()
+{
+	var nextXDays = $("#info-duesoon-products").data("next-x-days");
+	Grocy.Api.Get('stock/volatile?due_soon_days=' + nextXDays,
+		function(result)
+		{
+			var dueProducts = result.due_products;
+			var overdueProducts = result.overdue_products.filter(x => !BoolVal(x.product.hide_on_stock_overview));
+			var expiredProducts = result.expired_products.filter(x => !BoolVal(x.product.hide_on_stock_overview));
+
+			$("#info-duesoon-products").html('<span class="d-block d-md-none">' + dueProducts.length + ' <i class="fa-solid fa-clock"></i></span><span class="d-none d-md-block">' + __n(dueProducts.length, '%s product is due', '%s products are due') + ' ' + __n(nextXDays, 'within the next day', 'within the next %s days') + '</span>');
+			$("#info-overdue-products").html('<span class="d-block d-md-none">' + overdueProducts.length + ' <i class="fa-solid fa-times-circle"></i></span><span class="d-none d-md-block">' + __n(overdueProducts.length, '%s product is overdue', '%s products are overdue') + '</span>');
+			$("#info-expired-products").html('<span class="d-block d-md-none">' + expiredProducts.length + ' <i class="fa-solid fa-times-circle"></i></span><span class="d-none d-md-block">' + __n(expiredProducts.length, '%s product is expired', '%s products are expired') + '</span>');
+		},
+		function(xhr)
+		{
+			console.error(xhr);
+		}
+	);
+}
+statistics();
 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex)
 {
 	var productId = Grocy.Components.ProductPicker.GetValue();
@@ -26,11 +49,20 @@ $.fn.dataTable.ext.search.push(function(settings, data, dataIndex)
 
 	return false;
 });
-
+$(".status-filter-message").on("click", function()
+{
+	var value = $(this).data("status-filter");
+	$("#status-filter").val(value);
+	$("#status-filter").trigger("change");
+});
 $("#clear-filter-button").on("click", function()
 {
 	$("#location-filter").val("all");
 	$("#location-filter").trigger("change");
+	$("#product-group-filter").val("all");
+	$("#product-group-filter").trigger("change");
+	$("#status-filter").val("all");
+	$("#status-filter").trigger("change");
 	Grocy.Components.ProductPicker.Clear();
 	stockEntriesTable.draw();
 });
@@ -45,6 +77,35 @@ $("#location-filter").on("change", function()
 	}
 
 	stockEntriesTable.column(stockEntriesTable.colReorder.transpose(5)).search(text).draw();
+});
+
+$("#product-group-filter").on("change", function()
+{
+	var value = $(this).val();
+	if (value === "all")
+	{
+		value = "";
+	}
+	else
+	{
+		value = "xx" + value + "xx";
+	}
+
+	stockEntriesTable.column(stockEntriesTable.colReorder.transpose(12)).search(value).draw();
+});
+
+$("#status-filter").on("change", function()
+{
+	var value = $(this).val();
+	if (value === "all")
+	{
+		value = "";
+	}
+
+	// Transfer CSS classes of selected element to dropdown element (for background)
+	$(this).attr("class", $("#" + $(this).attr("id") + " option[value='" + value + "']").attr("class") + " form-control");
+
+	stockEntriesTable.column(stockEntriesTable.colReorder.transpose(13)).search(value).draw();
 });
 
 Grocy.Components.ProductPicker.GetPicker().on('change', function(e)
@@ -331,3 +392,14 @@ function UndoStockBookingEntry(bookingId, stockRowId)
 		}
 	);
 };
+
+$("#search").on("keyup", Delay(function()
+{
+	var value = $(this).val();
+	if (value === "all")
+	{
+		value = "";
+	}
+
+	stockEntriesTable.search(value).draw();
+}, 200));

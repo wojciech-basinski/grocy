@@ -542,18 +542,23 @@ class StockController extends BaseController
 		$usersService = $this->getUsersService();
 		$nextXDays = $usersService->GetUserSettings(GROCY_USER_ID)['stock_due_soon_days'];
 
+		$sql = 'SELECT u.*, pb.barcode FROM uihelper_stock_entries u ' .
+			" LEFT JOIN product_barcodes pb on pb.product_id = u.product_id ORDER BY u.product_id ASC";
+		$stockEntries = $this->getDatabaseService()->ExecuteDbQuery($sql)->fetchAll( \PDO::FETCH_OBJ);
+
 		return $this->renderPage($response, 'stockentries', [
 			'products' => $this->getDatabase()->products()->where('active = 1')->orderBy('name', 'COLLATE NOCASE'),
 			'quantityunits' => $this->getDatabase()->quantity_units()->where('active = 1')->orderBy('name', 'COLLATE NOCASE'),
 			'locations' => $this->getDatabase()->locations()->where('active = 1')->orderBy('name', 'COLLATE NOCASE'),
 			'shoppinglocations' => $this->getDatabase()->shopping_locations()->where('active = 1')->orderBy('name', 'COLLATE NOCASE'),
-			'stockEntries' => $this->getDatabase()->uihelper_stock_entries()->orderBy('product_id'),
+			'stockEntries' => $stockEntries,
 			'currentStockLocations' => $this->getStockService()->GetCurrentStockLocations(),
 			'nextXDays' => $nextXDays,
 			'userfieldsProducts' => $this->getUserfieldsService()->GetFields('products'),
 			'userfieldValuesProducts' => $this->getUserfieldsService()->GetAllValues('products'),
 			'userfieldsStock' => $this->getUserfieldsService()->GetFields('stock'),
-			'userfieldValuesStock' => $this->getUserfieldsService()->GetAllValues('stock')
+			'userfieldValuesStock' => $this->getUserfieldsService()->GetAllValues('stock'),
+			'productGroups' => $this->getDatabase()->product_groups()->where('active = 1')->orderBy('name', 'COLLATE NOCASE'),
 		]);
 	}
 

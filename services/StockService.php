@@ -680,6 +680,21 @@ class StockService extends BaseService
 		}
 	}
 
+	public function getDueProductsFromStock(int $days = 5)
+	{
+		$sql = 'SELECT * FROM stock ' . "WHERE best_before_date <= date('now', '$days days') AND best_before_date >= date() GROUP BY product_id";
+		$currentStockMapped = $this->getDatabaseService()->ExecuteDbQuery($sql)->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_OBJ);
+
+		$newStock = [];
+		$i = 1;
+		foreach ($currentStockMapped as $stock) {
+			$newStock[$i] = $stock;
+			$i++;
+		}
+
+		return array_column($newStock, 0);
+	}
+
 	public function GetExpiredProducts()
 	{
 		return $this->GetCurrentStock('WHERE best_before_date < date() AND due_type = 2');
