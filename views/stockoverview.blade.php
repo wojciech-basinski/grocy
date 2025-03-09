@@ -218,7 +218,7 @@
 							data-product-qu-name="{{ $currentStockEntry->qu_stock_name }}"
 							data-consume-amount="@if($currentStockEntry->enable_tare_weight_handling == 1){{$currentStockEntry->tare_weight}}@else{{$currentStockEntry->amount}}@endif"
 							data-original-total-stock-amount="{{$currentStockEntry->amount}}">
-							<i class="fa-solid fa-utensils"></i> {{ $__t('All') }}
+							<i class="fa-solid fa-utensils"></i>
 						</a>
 						@if(GROCY_FEATURE_FLAG_STOCK_PRODUCT_OPENED_TRACKING)
 						<a class="btn btn-success btn-sm product-open-button @if($currentStockEntry->amount_aggregated < $currentStockEntry->quick_open_amount || $currentStockEntry->amount_aggregated == $currentStockEntry->amount_opened_aggregated || $currentStockEntry->enable_tare_weight_handling == 1) disabled @endif"
