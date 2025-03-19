@@ -403,3 +403,9 @@ $("#search").on("keyup", Delay(function()
 
 	stockEntriesTable.search(value).draw();
 }, 200));
+
+$("a[href='#table-filter-row']").on("click", () => {
+	setTimeout(() => {
+		$('#search').focus();
+	}, 300);
+});

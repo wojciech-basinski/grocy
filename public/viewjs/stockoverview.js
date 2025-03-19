@@ -402,3 +402,9 @@ $(window).on("message", function(e)
 		RefreshStatistics();
 	}
 });
+
+$("a[href='#table-filter-row']").on("click", () => {
+	setTimeout(() => {
+		$('#search').focus();
+	}, 300);
+});

@@ -70,7 +70,8 @@
 			<input type="text"
 				   id="search"
 				   class="form-control"
-				   placeholder="{{ $__t('Search') }}">
+				   placeholder="{{ $__t('Search') }}"
+			       autofocus>
 		</div>
 	</div>
 	@if(GROCY_FEATURE_FLAG_STOCK_LOCATION_TRACKING)
