@@ -403,9 +403,9 @@ $(window).on("message", function(e)
 	}
 });
 
-$("a[href='#table-filter-row']").on("click touchend", (e) => {
+$("a[href='#table-filter-row']").on("click", () => {
 	setTimeout(() => {
 		$('#search').focus();
-		alert(document.activeElement.id);
-	}, 500);
+		alert('test');
+	}, 800);
 });
