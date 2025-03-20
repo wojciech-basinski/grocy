@@ -406,10 +406,9 @@ $(window).on("message", function(e)
 $("a[href='#table-filter-row']").on("click", () => {
 	setTimeout(() => {
 		let input = $('#search');
-		input.attr('readonly', false);
-		input.attr('disabled', false);
-		input.focus();
-		input.click();
-		input.trigger('touchstart');
+		input.blur();
+		setTimeout(() => {
+			input.focus();
+		}, 200);
 	}, 500);
 });
