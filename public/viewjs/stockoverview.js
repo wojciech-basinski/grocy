@@ -404,11 +404,11 @@ $(window).on("message", function(e)
 });
 
 $("a[href='#table-filter-row']").on("click", () => {
+	let fakeInput = $('<input type="text" style="position:absolute;opacity:0;">');
+	$('body').append(fakeInput);
+	fakeInput.focus();
 	setTimeout(() => {
-		let input = $('#search');
-		input.blur();
-		setTimeout(() => {
-			input.focus();
-		}, 200);
+		fakeInput.remove();
+		$('#search').focus();
 	}, 500);
 });
