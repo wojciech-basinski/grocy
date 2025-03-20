@@ -404,9 +404,8 @@ $(window).on("message", function(e)
 });
 
 $("a[href='#table-filter-row']").on("click touchend", (e) => {
-	e.preventDefault();
 	setTimeout(() => {
 		$('#search').focus();
-		alert('Trying to focus:' . document.activeElement);
+		alert(document.activeElement.id);
 	}, 500);
 });
