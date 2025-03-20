@@ -413,6 +413,5 @@ $("a[href='#table-filter-row']").on("click", (e) => {
 $("a[href='#table-filter-row'] i").on("click", (e) => {
 	setTimeout(() => {
 		$('#search').focus();
-		$('#debug').text('<div>' + document.activeElement.id + '</div>');
-	}, 800);
+	}, 500);
 });
