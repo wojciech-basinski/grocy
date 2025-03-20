@@ -1,4 +1,6 @@
-﻿var stockEntriesTable = $('#stockentries-table').DataTable({
+﻿$('#search').focus();
+
+var stockEntriesTable = $('#stockentries-table').DataTable({
 	'order': [[2, 'asc']],
 	'columnDefs': [
 		{ 'orderable': false, 'targets': 0 },

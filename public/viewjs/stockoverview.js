@@ -1,4 +1,4 @@
-﻿
+﻿$('#search').focus();
 
 var stockOverviewTable = $('#stock-overview-table').DataTable({
 	'order': [[5, 'asc']],
@@ -407,5 +407,5 @@ $("a[href='#table-filter-row']").on("click", () => {
 	setTimeout(() => {
 		$('#search').focus();
 	}, 400);
-	setTimeout(() => $('#search').click(), 100);
+	setTimeout(() => $('#search').click(), 600);
 });
