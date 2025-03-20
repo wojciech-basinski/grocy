@@ -11,6 +11,7 @@
 @section('content')
 <div class="row">
 	<div class="col">
+		<div id="debug"></div>
 		<div class="title-related-links">
 			<h2 class="title mr-2 order-0">
 				@yield('title')

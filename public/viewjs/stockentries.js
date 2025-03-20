@@ -409,6 +409,5 @@ $("#search").on("keyup", Delay(function()
 $("a[href='#table-filter-row']").on("click", () => {
 	setTimeout(() => {
 		$('#search').focus();
-		alert('test');
 	}, 400);
 });
