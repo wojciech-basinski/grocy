@@ -406,5 +406,5 @@ $(window).on("message", function(e)
 $("a[href='#table-filter-row']").on("click", () => {
 	setTimeout(() => {
 		$('#search').focus();
-	}, 300);
+	}, 400);
 });
