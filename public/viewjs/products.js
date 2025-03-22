@@ -175,3 +175,9 @@ $("#merge-products-save-button").on("click", function(e)
 		}
 	);
 });
+
+$('button[data-target="#table-filter-row"]').on("click", () => {
+	setTimeout(() => {
+		$('#search').focus();
+	}, 500);
+});

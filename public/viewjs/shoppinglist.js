@@ -624,3 +624,10 @@ if ($(window).width() < 768 || !Grocy.FeatureFlags.GROCY_FEATURE_FLAG_STOCK)
 {
 	$("#filter-container").removeClass("border-bottom");
 }
+
+$('button[data-target="#table-filter-row"]').on("click", () => {
+	setTimeout(() => {
+		$('#search').focus();
+	}, 500);
+});
+

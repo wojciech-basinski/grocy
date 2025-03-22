@@ -495,3 +495,9 @@ $('#add-to-mealplan-form input').keydown(function(event)
 		}
 	}
 });
+
+$('button[data-target="#table-filter-row"]').on("click", () => {
+	setTimeout(() => {
+		$('#search').focus();
+	}, 500);
+});

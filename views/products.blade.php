@@ -54,7 +54,8 @@
 			<input type="text"
 				id="search"
 				class="form-control"
-				placeholder="{{ $__t('Search') }}">
+				placeholder="{{ $__t('Search') }}"
+			    autofocus>
 		</div>
 	</div>
 	<div class="col-12 col-md-6 col-xl-3">
