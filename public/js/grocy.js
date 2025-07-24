@@ -348,7 +348,7 @@ RefreshContextualTimeago();
 toastr.options = {
 	toastClass: 'alert',
 	closeButton: true,
-	timeOut: 20000,
+	timeOut: 2000,
 	extendedTimeOut: 5000
 };
 
