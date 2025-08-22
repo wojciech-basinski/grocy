@@ -1,4 +1,7 @@
 ﻿var CurrentProductDetails;
+const btn = document.getElementById("openCamera");
+const input = document.getElementById("cameraInput");
+const dateInput = $('.datetimepicker-input');
 
 $('#save-purchase-button').on('click', function(e)
 {
@@ -735,3 +738,75 @@ if (Grocy.FeatureFlags.GROCY_FEATURE_FLAG_LABEL_PRINTER)
 		}
 	});
 }
+
+btn.addEventListener("click", (e) => {
+	e.preventDefault();
+	input.click();
+});
+
+function fixOCRDigits(text) {
+	return text
+		.replace(/s/gi, '6')
+		.replace(/%/g, '5')
+		.replace(/[Oo]/g, '0')
+		.replace(/[Il]/g, '1')
+		.replace(/B/g, '8')
+		.replace(/Z/g, '2');
+}
+
+function extractDate(text) {
+	text = fixOCRDigits(text);
+
+	const regex = /\b(?:EXP|Best\sbefore|BBD|BBE)?[:\s\-]*([0-3]?\d[ \/.\\-][01]?\d[ \/.\\-]\d{2,4}|[01]?\d[ \/.\\-]\d{2,4})\b/i;
+
+	const match = text.match(regex);
+	return match ? match[1] : null;
+}
+
+function parseDate(textDate) {
+	if (!textDate) return null;
+	let day = 1, month = 1, year = 1970;
+
+	textDate = textDate.replace(/[\/\.\-]/g, ' ').trim();
+	const parts = textDate.split(' ');
+
+	if (parts.length === 3) {
+		day = parseInt(parts[0], 10);
+		month = parseInt(parts[1], 10);
+		year = parseInt(parts[2], 10);
+		if (year < 100) year += 2000;
+	} else if (parts.length === 2) {
+		day = 1;
+		month = parseInt(parts[0], 10);
+		year = parseInt(parts[1], 10);
+		if (year < 100) year += 2000;
+	}
+
+	return { day, month, year };
+}
+function formatDateISO(dateObj) {
+	const day = String(dateObj.day).padStart(2, '0');
+	const month = String(dateObj.month).padStart(2, '0');
+	const year = dateObj.year;
+	return `${year}-${month}-${day}`;
+}
+
+input.addEventListener("change", function(e) {
+	const file = e.target.files[0];
+	if (!file) return;
+
+	Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
+		const dateStr = extractDate(text);
+		if (dateStr === null) {
+			alert('nie udało się odczytać daty');
+			return;
+		}
+		const mDate = moment(formatDateISO(parseDate(dateStr)), 'YYYY-MM-DD');
+		dateInput.datetimepicker({
+			format: 'YYYY-MM-DD',
+			useCurrent: false,
+		});
+		dateInput.datetimepicker('date', mDate);
+	});
+});
+

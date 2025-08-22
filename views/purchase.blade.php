@@ -4,6 +4,7 @@
 
 @push('pageScripts')
 <script src="{{ $U('/js/grocy_uisound.js?v=', true) }}{{ $version }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 @endpush
 
 @section('content')
@@ -94,6 +95,8 @@
 			'earlierThanInfoText' => $__t('The given date is earlier than today, are you sure?'),
 			'activateNumberPad' => GROCY_FEATURE_FLAG_STOCK_BEST_BEFORE_DATE_FIELD_NUMBER_PAD
 			))
+			<button id="openCamera">📷 Zrób zdjęcie</button>
+				<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
 			@endif
 
 			@if(GROCY_FEATURE_FLAG_STOCK_PRICE_TRACKING)
