@@ -48,7 +48,7 @@
 
 		<hr class="my-2">
 
-		<form id="purchase-form"
+		<form id="purchase-form" onsubmit="return false"
 			novalidate>
 
 			@include('components.productpicker', array(
