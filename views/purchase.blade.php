@@ -6,7 +6,29 @@
 <script src="{{ $U('/js/grocy_uisound.js?v=', true) }}{{ $version }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 @endpush
+<style>
+	#camera-container {
+		width: 100%;
+		max-width: 400px;
+		height: 300px;
+		border: 1px solid #ccc;
+		position: relative;
+	}
 
+	#camera-container video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	#start-camera {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 2;
+	}
+</style>
 @section('content')
 <script>
 	Grocy.QuantityUnits = {!! json_encode($quantityUnits) !!};
@@ -97,10 +119,10 @@
 			))
 {{--			<button id="openCamera">📷</button>--}}
 {{--				<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" >--}}
-				<button id="start-camera">Otwórz aparat</button>
-				<video id="camera-stream" autoplay playsinline style="display:none;"></video>
-				<canvas id="snapshot" style="display:none;"></canvas>
-				<img id="preview" />
+				<div id="camera-container">
+					<video id="camera" autoplay playsinline></video>
+					<button id="start-camera">Uruchom kamerę</button>
+				</div>
 			@endif
 
 			@if(GROCY_FEATURE_FLAG_STOCK_PRICE_TRACKING)

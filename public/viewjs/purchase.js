@@ -811,32 +811,44 @@ if (Grocy.FeatureFlags.GROCY_FEATURE_FLAG_LABEL_PRINTER)
 // 	});
 // });
 
-const startButton = document.getElementById('start-camera');
-const video = document.getElementById('camera-stream');
-const canvas = document.getElementById('snapshot');
-const preview = document.getElementById('preview');
+// const startButton = document.getElementById('start-camera');
+// const video = document.getElementById('camera-stream');
+// const canvas = document.getElementById('snapshot');
+// const preview = document.getElementById('preview');
+//
+// startButton.addEventListener('click', async () => {
+// 	try {
+// 		const stream = await navigator.mediaDevices.getUserMedia({
+// 			video: { facingMode: { exact: "environment" } }
+// 		});
+// 		video.srcObject = stream;
+// 		video.style.display = 'block';
+//
+// 		video.addEventListener('click', () => {
+// 			canvas.width = video.videoWidth;
+// 			canvas.height = video.videoHeight;
+// 			canvas.getContext('2d').drawImage(video, 0, 0);
+// 			preview.src = canvas.toDataURL('image/png');
+// 			preview.style.display = 'block';
+//
+// 			stream.getTracks().forEach(track => track.stop());
+// 			video.style.display = 'none';
+// 		}, { once: true });
+//
+// 	} catch (err) {
+// 		console.error('Błąd przy uruchamianiu kamery:', err);
+// 		alert('Błąd przy uruchamianiu kamery:');
+// 	}
+// });
 
-startButton.addEventListener('click', async () => {
+document.getElementById('start-camera').addEventListener('click', async () => {
+	const video = document.getElementById('camera');
 	try {
-		const stream = await navigator.mediaDevices.getUserMedia({
-			video: { facingMode: { exact: "environment" } }
-		});
-		video.srcObject = stream;
-		video.style.display = 'block';
-
-		video.addEventListener('click', () => {
-			canvas.width = video.videoWidth;
-			canvas.height = video.videoHeight;
-			canvas.getContext('2d').drawImage(video, 0, 0);
-			preview.src = canvas.toDataURL('image/png');
-			preview.style.display = 'block';
-
-			stream.getTracks().forEach(track => track.stop());
-			video.style.display = 'none';
-		}, { once: true });
-
+		video.srcObject = await navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}});
+		await video.play();
+		document.getElementById('start-camera').style.display = 'none';
 	} catch (err) {
+		alert('problem z kamerą');
 		console.error('Błąd przy uruchamianiu kamery:', err);
-		alert('Błąd przy uruchamianiu kamery:');
 	}
 });
