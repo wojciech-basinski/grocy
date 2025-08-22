@@ -95,8 +95,12 @@
 			'earlierThanInfoText' => $__t('The given date is earlier than today, are you sure?'),
 			'activateNumberPad' => GROCY_FEATURE_FLAG_STOCK_BEST_BEFORE_DATE_FIELD_NUMBER_PAD
 			))
-			<button id="openCamera">📷</button>
-				<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+{{--			<button id="openCamera">📷</button>--}}
+{{--				<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" >--}}
+				<button id="start-camera">Otwórz aparat</button>
+				<video id="camera-stream" autoplay playsinline style="display:none;"></video>
+				<canvas id="snapshot" style="display:none;"></canvas>
+				<img id="preview" />
 			@endif
 
 			@if(GROCY_FEATURE_FLAG_STOCK_PRICE_TRACKING)
