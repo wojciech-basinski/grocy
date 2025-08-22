@@ -792,6 +792,7 @@ function formatDateISO(dateObj) {
 }
 
 input.addEventListener("change", function(e) {
+	e.preventDefault();
 	const file = e.target.files[0];
 	if (!file) return;
 
