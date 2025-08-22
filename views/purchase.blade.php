@@ -96,7 +96,7 @@
 			'activateNumberPad' => GROCY_FEATURE_FLAG_STOCK_BEST_BEFORE_DATE_FIELD_NUMBER_PAD
 			))
 			<button id="openCamera">📷</button>
-				<input type="file" accept="image/*" id="cameraInput">
+				<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
 			@endif
 
 			@if(GROCY_FEATURE_FLAG_STOCK_PRICE_TRACKING)
